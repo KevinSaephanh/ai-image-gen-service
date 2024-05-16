@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: unless-stopped
+    container_name: mongo
+    hostname: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE=$MONGODB_DATABASE
+    ports:
+      - 27017:27017
+    volumes:
+      - db:data/db
+  app:
+    depends_on:
+      - mongo
+    build: ./app
+    restart: on-failure
+    ports:
+      - 8080:8080
+    volumes:
+      - .m2:/root/.m2
+
+volumes:
+  db:

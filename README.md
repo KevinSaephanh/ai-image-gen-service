@@ -1,3 +1,8 @@
-# Spring Boot AI Image Gen
+# Spring AI Image Generation Service
+Generate AI images given a prompt using OpenAI. Store image metadata in MongoDB.
 
-Simple app to generate AI images given a prompt
+## Tech
+- Spring Boot
+- Spring AI
+- OpenAI
+- MongoDB

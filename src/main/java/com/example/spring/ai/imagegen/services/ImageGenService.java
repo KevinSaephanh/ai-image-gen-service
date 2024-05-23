@@ -3,7 +3,8 @@ package com.example.spring.ai.imagegen.services;
 import com.example.spring.ai.imagegen.models.GenImage;
 import com.example.spring.ai.imagegen.repositories.GenImageRepository;
 import com.example.spring.ai.imagegen.requests.ImageGenRequest;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.ai.image.ImageClient;
 import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.image.ImageResponse;
@@ -18,9 +19,10 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-@Slf4j
 @Service
 public class ImageGenService {
+    private static final Logger logger = LogManager.getLogger(ImageGenService.class);
+
     @Autowired
     private ImageClient imageClient;
 
@@ -33,7 +35,7 @@ public class ImageGenService {
     public GenImage generateImage(ImageGenRequest req) {
         if (!StringUtils.hasText(req.prompt()) || !StringUtils.hasText(req.userId())) {
             String message = "Prompt cannot be empty!";
-            log.error("ImageGenService generateImage: {}", message);
+            logger.error("ImageGenService generateImage: {}", message);
             throw new IllegalArgumentException(message);
         }
 
@@ -45,12 +47,12 @@ public class ImageGenService {
         ImagePrompt imagePrompt = new ImagePrompt(req.prompt(), options);
         ImageResponse res = imageClient.call(imagePrompt);
         String imageUrl = res.getResult().getOutput().getUrl();
-        log.info("ImageGenService generateImage: success: {}", imageUrl);
+        logger.info("ImageGenService generateImage: success: {}", imageUrl);
         return saveImageMetadata(imageUrl, req.prompt(), req.userId());
     }
 
     public GenImage saveImageMetadata(String imageUrl, String prompt, String userId) {
-        log.info("ImageGenService saveImageMetadata: saving with: {} and {}", prompt, userId);
+        logger.info("ImageGenService saveImageMetadata: saving with: {} and {}", prompt, userId);
         String parsedPath = imageUrl.substring(imageUrl.lastIndexOf(openAIUser));
         GenImage genImage = GenImage.builder()
                 .prompt(prompt)
@@ -58,12 +60,12 @@ public class ImageGenService {
                 .path(parsedPath)
                 .build();
         genImage = repository.save(genImage);
-        log.info("ImageGenService saveImageMetadata: success");
+        logger.info("ImageGenService saveImageMetadata: success");
         return genImage;
     }
 
     public List<GenImage> findUserGenImages(String userId, int page, int size, String sort) {
-        log.info("ImageGenService findUserGenImages: finding user gen images");
+        logger.info("ImageGenService findUserGenImages: finding user gen images");
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
         return repository.findByUserId(pageable, userId);
     }

@@ -1,7 +1,11 @@
-FROM openjdk:22
+FROM maven AS build
 
 WORKDIR /app
-COPY . .
+ARG PORT
+COPY . /app
 RUN mvn clean install
 
-CMD mvn spring-boot:run
+FROM openjdk:22
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE ${PORT}
+CMD ["java", "-jar", "app.jar"]

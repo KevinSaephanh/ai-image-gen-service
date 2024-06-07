@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: spring.ai.imagegen
+  profiles:
+    active: ${PROFILE:dev}
+  data:
+    mongodb:
+      host: ${MONGODB_HOST}
+      database: ${MONGODB_DATABASE}
+      uri: ${MONGODB_URI}
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      user: ${OPENAI_API_USER}
+
+server:
+  port: ${PORT:8080}

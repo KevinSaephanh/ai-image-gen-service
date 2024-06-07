@@ -1,0 +1,6 @@
+#MONGODB_HOST: <your-host>
+#MONGODB_DATABASE: <your-db>
+#MONGODB_URI: <your-uri>
+#
+#OPENAI_API_KEY: <your-api-key>
+#OPENAI_API_USER: <your-api-user>
